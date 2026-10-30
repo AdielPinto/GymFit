@@ -108,3 +108,108 @@ footer {
         height: 350px;
     }
 }
+
+/* DASHBOARD GYMFIT */
+
+.hero {
+    background: linear-gradient(120deg, #172554, #2563eb);
+}
+
+.quick-link {
+    text-decoration: none;
+    color: #172554;
+}
+
+.quick-card {
+    border: none;
+    border-radius: 14px;
+    transition: all 0.2s ease;
+    height: 100%;
+}
+
+.quick-card:hover {
+    background: #e8efff;
+    transform: translateY(-3px);
+}
+
+.quick-card h5 {
+    font-weight: bold;
+}
+
+.quick-card p {
+    font-size: 14px;
+}
+
+.stat-card {
+    height: 100%;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+}
+
+.stat-number {
+    font-size: 2.3rem;
+    font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 35px 25px;
+    }
+}
+
+
+/* NOTIFICACION DE REGISTRO EXITOSO */
+
+.success-toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 22px;
+    color: white;
+    background: #16a34a;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    animation: toastEntrada 0.5s ease forwards;
+}
+
+.success-toast .check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: white;
+    color: #16a34a;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.success-toast.ocultar {
+    animation: toastSalida 0.5s ease forwards;
+}
+
+@keyframes toastEntrada {
+    from {
+        opacity: 0;
+        transform: translateX(120%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastSalida {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(120%);
+    }
+}

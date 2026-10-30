@@ -1,138 +1,202 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservas - GymFit</title>
+    <title>Reservas | GymFit</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand fw-bold" href="/">GYMFIT</a>
-        <div>
-            <a class="btn btn-outline-light btn-sm" href="/">Inicio</a>
-            <a class="btn btn-outline-light btn-sm" href="/clientes">Clientes</a>
-            <a class="btn btn-outline-light btn-sm" href="/membresias">Membresías</a>
-            <a class="btn btn-outline-light btn-sm" href="/entrenadores">Entrenadores</a>
-            <a class="btn btn-primary btn-sm" href="/reservas">Reservas</a>
-            <a class="btn btn-outline-light btn-sm" href="/graficos">Gráficos</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menu">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Inicio</a>
+                <a class="nav-link" href="/clientes">Clientes</a>
+                <a class="nav-link" href="/membresias">Membresías</a>
+                <a class="nav-link" href="/entrenadores">Entrenadores</a>
+                <a class="nav-link active" href="/reservas">Reservas</a>
+                <a class="nav-link" href="/graficos">Gráficos</a>
+            </div>
         </div>
     </div>
 </nav>
 
-<div class="container mt-4">
+<main class="container py-5">
 
-    <h1>Gestión de Reservas</h1>
-
-    <div class="card mt-4 shadow">
-
-        <div class="card-header bg-primary text-white">
-            Registrar reserva
+    <!-- TITULO Y BOTON DE DETALLE -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <span class="badge bg-primary mb-2">ADMINISTRACIÓN</span>
+            <h1 class="page-title mb-1">Gestión de Reservas</h1>
+            <p class="text-muted mb-0">Registra y administra las reservas del gimnasio.</p>
         </div>
 
-        <div class="card-body">
+        <a href="/reservas-detalle" class="btn btn-info text-white">
+            Ver reservas detalle
+        </a>
+    </div>
 
-            <form action="/reservas/guardar" method="post">
+    <!-- FORMULARIO DE REGISTRO -->
+    <div class="card section-card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Registrar reserva</h5>
+        </div>
 
-                <div class="row">
+        <div class="card-body p-4">
+            <form th:action="@{/reservas/guardar}" th:object="${reserva}" method="post"
+                  class="row g-3">
 
-                    <div class="col-md-2">
-                        <label>ID</label>
-                        <input type="number" name="id" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-5">
-                        <label>Cliente</label>
-                        <input type="text" name="cliente" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-5">
-                        <label>Entrenador</label>
-                        <input type="text" name="entrenador" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-4 mt-3">
-                        <label>Fecha</label>
-                        <input type="date" name="fecha" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-4 mt-3">
-                        <label>Hora</label>
-                        <input type="time" name="hora" class="form-control" required>
-                    </div>
-
-                    <div class="col-md-4 mt-3">
-                        <label>Estado</label>
-                        <select name="estado" class="form-select">
-                            <option>Confirmada</option>
-                            <option>Pendiente</option>
-                            <option>Cancelada</option>
-                        </select>
-                    </div>
-
+                <div class="col-md-6">
+                    <label class="form-label">Cliente</label>
+                    <select th:field="*{cliente}" class="form-select" required>
+                        <option value="">Seleccione un cliente</option>
+                        <option th:each="c : ${clientesDisponibles}"
+                                th:value="${c.nombre + ' ' + c.apellido}"
+                                th:text="${c.nombre + ' ' + c.apellido + ' - DNI: ' + c.dni}">
+                        </option>
+                    </select>
                 </div>
 
-                <button type="submit" class="btn btn-success mt-3">
-                    Registrar reserva
-                </button>
+                <div class="col-md-6">
+                    <label class="form-label">Entrenador</label>
+                    <select th:field="*{entrenador}" class="form-select" required>
+                        <option value="">Seleccione un entrenador</option>
+                        <option th:each="e : ${entrenadoresDisponibles}"
+                                th:value="${e.nombre}"
+                                th:text="${e.nombre + ' - ' + e.especialidad}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Fecha</label>
+                    <input type="date" th:field="*{fecha}" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Hora</label>
+                    <input type="time" th:field="*{hora}" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Estado</label>
+                    <select th:field="*{estado}" class="form-select" required>
+                        <option value="">Seleccione un estado</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="Confirmada">Confirmada</option>
+                        <option value="Cancelada">Cancelada</option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        Registrar reserva
+                    </button>
+                </div>
 
             </form>
-
         </div>
     </div>
 
-    <div class="card mt-4 shadow">
-
-        <div class="card-header">
-            Reservas registradas
+    <!-- LISTADO DE RESERVAS -->
+    <div class="card section-card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Reservas registradas</h5>
+            <small class="text-muted">Listado de reservas almacenadas en el sistema</small>
         </div>
 
-        <div class="card-body">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Entrenador</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
 
-            <table class="table table-striped">
+                    <tbody>
+                        <tr th:each="reserva, reservaStat : ${reservas}">
+                            <td th:text="${reservaStat.count}"></td>
+                            <td th:text="${reserva.cliente}"></td>
+                            <td th:text="${reserva.entrenador}"></td>
+                            <td th:text="${reserva.fecha}"></td>
+                            <td th:text="${reserva.hora}"></td>
+                            <td>
+                                <span class="badge bg-success"
+                                      th:if="${reserva.estado == 'Confirmada'}"
+                                      th:text="${reserva.estado}"></span>
 
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Entrenador</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
+                                <span class="badge bg-warning text-dark"
+                                      th:if="${reserva.estado == 'Pendiente'}"
+                                      th:text="${reserva.estado}"></span>
 
-                <tbody>
+                                <span class="badge bg-danger"
+                                      th:if="${reserva.estado == 'Cancelada'}"
+                                      th:text="${reserva.estado}"></span>
 
-                    <tr th:each="reserva : ${reservas}">
-                        <td th:text="${reserva.id}"></td>
-                        <td th:text="${reserva.cliente}"></td>
-                        <td th:text="${reserva.entrenador}"></td>
-                        <td th:text="${reserva.fecha}"></td>
-                        <td th:text="${reserva.hora}"></td>
-                        <td th:text="${reserva.estado}"></td>
+                                <span class="badge bg-secondary"
+                                      th:if="${reserva.estado != 'Confirmada' and reserva.estado != 'Pendiente' and reserva.estado != 'Cancelada'}"
+                                      th:text="${reserva.estado}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/reservas/eliminar/{id}(id=${reserva.id})}"
+                                   class="btn btn-danger btn-sm btn-eliminar"
+                                   onclick="return confirm('¿Está seguro de eliminar esta reserva?')">
+                                    Eliminar
+                                </a>
+                            </td>
+                        </tr>
 
-                        <td>
-                            <a th:href="@{/reservas/eliminar/{id}(id=${reserva.id})}"
-                               class="btn btn-danger btn-sm btn-eliminar">
-                                Eliminar
-                            </a>
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
+                        <tr th:if="${#lists.isEmpty(reservas)}">
+                            <td colspan="7" class="text-center text-muted py-4">
+                                No hay reservas registradas.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
+    <div class="text-center text-muted mt-5">
+        <small>© 2026 GymFit - Gestión de reservas</small>
+    </div>
+
+</main>
+
+<!-- NOTIFICACION DE REGISTRO EXITOSO -->
+<div th:if="${mensajeExito}" class="success-toast" id="mensajeExito">
+    <span class="check">✓</span>
+    <span th:text="${mensajeExito}">Registrado con éxito</span>
 </div>
 
+<script th:if="${mensajeExito}">
+    setTimeout(() => {
+        const mensaje = document.getElementById("mensajeExito");
+        if (mensaje) {
+            mensaje.classList.add("ocultar");
+            setTimeout(() => mensaje.remove(), 500);
+        }
+    }, 3000);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/scripts.js}"></script>
+
 </body>
 </html>

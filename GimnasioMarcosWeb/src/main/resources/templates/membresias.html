@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -9,117 +10,129 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand fw-bold" href="/">GYMFIT</a>
-        <div>
-            <a class="btn btn-outline-light btn-sm" href="/">Inicio</a>
-            <a class="btn btn-outline-light btn-sm" href="/clientes">Clientes</a>
-            <a class="btn btn-primary btn-sm" href="/membresias">Membresías</a>
-            <a class="btn btn-outline-light btn-sm" href="/entrenadores">Entrenadores</a>
-            <a class="btn btn-outline-light btn-sm" href="/reservas">Reservas</a>
-            <a class="btn btn-outline-light btn-sm" href="/graficos">Gráficos</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menu">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Inicio</a>
+                <a class="nav-link" href="/clientes">Clientes</a>
+                <a class="nav-link active" href="/membresias">Membresías</a>
+                <a class="nav-link" href="/entrenadores">Entrenadores</a>
+                <a class="nav-link" href="/reservas">Reservas</a>
+                <a class="nav-link" href="/graficos">Gráficos</a>
+            </div>
         </div>
     </div>
 </nav>
 
-<div class="container mt-4">
+<main class="container py-5">
 
-    <h1>Gestión de Membresías</h1>
+    <div class="mb-4">
+        <span class="badge bg-success mb-2">PLANES Y SERVICIOS</span>
+        <h1 class="page-title mb-1">Gestión de Membresías</h1>
+        <p class="text-muted">Administra los planes, precios, duración y beneficios del gimnasio.</p>
+    </div>
 
-    <div class="card mt-4 shadow">
-        <div class="card-header bg-primary text-white">
-            Registrar membresía
+    <div class="card section-card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Registrar nueva membresía</h5>
         </div>
-
-        <div class="card-body">
-
+        <div class="card-body p-4">
             <form action="/membresias/guardar" method="post">
-
-                <div class="row">
-
-                    <div class="col-md-2">
-                        <label>ID</label>
-                        <input type="number" name="id" class="form-control" required>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Nombre del plan</label>
+                        <input type="text" name="nombre" class="form-control" placeholder="Ej. Plan mensual" required>
                     </div>
 
                     <div class="col-md-4">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" required>
+                        <label class="form-label">Precio</label>
+                        <input type="number" step="0.01" name="precio" class="form-control" placeholder="0.00" required>
                     </div>
 
-                    <div class="col-md-3">
-                        <label>Precio</label>
-                        <input type="number" step="0.01" name="precio" class="form-control" required>
+                    <div class="col-md-4">
+                        <label class="form-label">Duración (meses)</label>
+                        <input type="number" name="duracion" class="form-control" placeholder="Ej. 1" required>
                     </div>
 
-                    <div class="col-md-3">
-                        <label>Duración (meses)</label>
-                        <input type="number" name="duracion" class="form-control" required>
+                    <div class="col-12">
+                        <label class="form-label">Beneficios</label>
+                        <input type="text" name="descripcion" class="form-control"
+                               placeholder="Describa los beneficios del plan" required>
                     </div>
-
-                    <div class="col-md-12 mt-3">
-                        <label>Beneficios</label>
-                        <input type="text" name="beneficios" class="form-control" required>
-                    </div>
-
                 </div>
 
-                <button type="submit" class="btn btn-success mt-3">
-                    Registrar membresía
-                </button>
-
+                <button type="submit" class="btn btn-primary mt-4">Registrar membresía</button>
             </form>
-
         </div>
     </div>
 
-    <div class="card mt-4 shadow">
-        <div class="card-header">
-            Membresías registradas
+    <div class="card section-card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Membresías registradas</h5>
+            <small class="text-muted">Planes disponibles en el sistema</small>
         </div>
 
-        <div class="card-body">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Duración</th>
+                            <th>Beneficios</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
 
-            <table class="table table-striped">
-
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Precio</th>
-                        <th>Duración</th>
-                        <th>Beneficios</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    <tr th:each="membresia : ${membresias}">
-                        <td th:text="${membresia.id}"></td>
-                        <td th:text="${membresia.nombre}"></td>
-                        <td th:text="${membresia.precio}"></td>
-                        <td th:text="${membresia.duracion} + ' meses'"></td>
-                        <td th:text="${membresia.beneficios}"></td>
-
-                        <td>
-                            <a th:href="@{/membresias/eliminar/{id}(id=${membresia.id})}"
-                               class="btn btn-danger btn-sm btn-eliminar">
-                                Eliminar
-                            </a>
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
+                    <tbody>
+                        <tr th:each="membresia : ${membresias}">
+                            <td th:text="${membresiaStat.count}"></td>
+                            <td th:text="${membresia.nombre}"></td>
+                            <td th:text="${'S/ ' + membresia.precio}"></td>
+                            <td th:text="${membresia.duracion} + ' meses'"></td>
+                            <td th:text="${membresia.descripcion}"></td>
+                            <td>
+                                <a th:href="@{/membresias/eliminar/{id}(id=${membresia.id})}"
+                                   class="btn btn-danger btn-sm btn-eliminar">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
+    <div class="text-center text-muted mt-5">
+        <small>© 2026 GymFit - Gestión de membresías</small>
+    </div>
+
+</main>
+
+<!-- NOTIFICACIÓN DE REGISTRO EXITOSO -->
+<div th:if="${mensajeExito}" class="success-toast" id="mensajeExito">
+    <span class="check">✓</span>
+    <span th:text="${mensajeExito}">Registrado con éxito</span>
 </div>
 
+<script th:if="${mensajeExito}">
+    setTimeout(() => {
+        const mensaje = document.getElementById("mensajeExito");
+        if (mensaje) {
+            mensaje.classList.add("ocultar");
+            setTimeout(() => mensaje.remove(), 500);
+        }
+    }, 3000);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/scripts.js}"></script>
+
 </body>
 </html>

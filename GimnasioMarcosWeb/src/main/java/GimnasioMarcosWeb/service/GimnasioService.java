@@ -1,300 +1,156 @@
 package com.gimnasio.gimnasiomarcosweb.service;
 
-import com.gimnasio.gimnasiomarcosweb.model.Cliente;
-import com.gimnasio.gimnasiomarcosweb.model.Membresia;
-import com.gimnasio.gimnasiomarcosweb.model.Entrenador;
-import com.gimnasio.gimnasiomarcosweb.model.Reserva;
+import com.gimnasio.gimnasiomarcosweb.model.*;
+import com.gimnasio.gimnasiomarcosweb.repository.*;
+import com.gimnasio.gimnasiomarcosweb.dto.ReservaDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class GimnasioService {
 
-    private Cliente[] clientes = new Cliente[100];
-    private Membresia[] membresias = new Membresia[100];
-    private Entrenador[] entrenadores = new Entrenador[100];
-    private Reserva[] reservas = new Reserva[100];
+    private final ClienteRepository clienteRepository;
+    private final MembresiaRepository membresiaRepository;
+    private final EntrenadorRepository entrenadorRepository;
+    private final ReservaRepository reservaRepository;
 
-    private int cantidadClientes = 0;
-    private int cantidadMembresias = 0;
-    private int cantidadEntrenadores = 0;
-    private int cantidadReservas = 0;
+    public GimnasioService(
+            ClienteRepository clienteRepository,
+            MembresiaRepository membresiaRepository,
+            EntrenadorRepository entrenadorRepository,
+            ReservaRepository reservaRepository) {
 
-    public GimnasioService() {
-
-        agregarCliente(new Cliente(
-                1,
-                "Carlos",
-                "Ramirez",
-                "72845612",
-                "987654321",
-                "carlos@gmail.com"
-        ));
-
-        agregarCliente(new Cliente(
-                2,
-                "Maria",
-                "Torres",
-                "74561238",
-                "986123456",
-                "maria@gmail.com"
-        ));
-
-        agregarMembresia(new Membresia(
-                1,
-                "Plan Básico",
-                80.00,
-                1,
-                "Acceso a máquinas"
-        ));
-
-        agregarMembresia(new Membresia(
-                2,
-                "Plan Premium",
-                150.00,
-                3,
-                "Máquinas, clases y asesoría"
-        ));
-
-        agregarEntrenador(new Entrenador(
-                1,
-                "Luis Mendoza",
-                "Musculación",
-                "985456123",
-                "luis@gmail.com"
-        ));
-
-        agregarEntrenador(new Entrenador(
-                2,
-                "Ana Torres",
-                "Fitness",
-                "984123456",
-                "ana@gmail.com"
-        ));
-
-        agregarReserva(new Reserva(
-                1,
-                "Carlos Ramirez",
-                "Luis Mendoza",
-                "2026-10-05",
-                "10:00",
-                "Confirmada"
-        ));
+        this.clienteRepository = clienteRepository;
+        this.membresiaRepository = membresiaRepository;
+        this.entrenadorRepository = entrenadorRepository;
+        this.reservaRepository = reservaRepository;
     }
 
     // CLIENTES
 
     public void agregarCliente(Cliente cliente) {
-        if (cantidadClientes < clientes.length) {
-            clientes[cantidadClientes] = cliente;
-            cantidadClientes++;
-        }
+        cliente.setId(0);
+        clienteRepository.save(cliente);
     }
 
     public Cliente[] listarClientes() {
-    Cliente[] resultado = new Cliente[cantidadClientes];
-
-    for (int i = 0; i < cantidadClientes; i++) {
-        resultado[i] = clientes[i];
-    }
-
-    return resultado;
+        List<Cliente> lista = clienteRepository.findAll();
+        return lista.toArray(new Cliente[0]);
     }
 
     public Cliente buscarCliente(int id) {
-
-        for (int i = 0; i < cantidadClientes; i++) {
-
-            if (clientes[i].getId() == id) {
-                return clientes[i];
-            }
-        }
-
-        return null;
+        return clienteRepository.findById(id).orElse(null);
     }
 
     public void eliminarCliente(int id) {
+        clienteRepository.deleteById(id);
+    }
 
-        for (int i = 0; i < cantidadClientes; i++) {
-
-            if (clientes[i].getId() == id) {
-
-                for (int j = i; j < cantidadClientes - 1; j++) {
-                    clientes[j] = clientes[j + 1];
-                }
-
-                clientes[cantidadClientes - 1] = null;
-                cantidadClientes--;
-
-                break;
-            }
-        }
+    public int cantidadClientes() {
+        return (int) clienteRepository.count();
     }
 
     // MEMBRESIAS
 
     public void agregarMembresia(Membresia membresia) {
-
-        if (cantidadMembresias < membresias.length) {
-            membresias[cantidadMembresias] = membresia;
-            cantidadMembresias++;
-        }
+        membresia.setId(0);
+        membresiaRepository.save(membresia);
     }
 
     public Membresia[] listarMembresias() {
-    Membresia[] resultado = new Membresia[cantidadMembresias];
-
-    for (int i = 0; i < cantidadMembresias; i++) {
-        resultado[i] = membresias[i];
-    }
-
-    return resultado;
+        List<Membresia> lista = membresiaRepository.findAll();
+        return lista.toArray(new Membresia[0]);
     }
 
     public Membresia buscarMembresia(int id) {
-
-        for (int i = 0; i < cantidadMembresias; i++) {
-
-            if (membresias[i].getId() == id) {
-                return membresias[i];
-            }
-        }
-
-        return null;
+        return membresiaRepository.findById(id).orElse(null);
     }
 
     public void eliminarMembresia(int id) {
+        membresiaRepository.deleteById(id);
+    }
 
-        for (int i = 0; i < cantidadMembresias; i++) {
-
-            if (membresias[i].getId() == id) {
-
-                for (int j = i; j < cantidadMembresias - 1; j++) {
-                    membresias[j] = membresias[j + 1];
-                }
-
-                membresias[cantidadMembresias - 1] = null;
-                cantidadMembresias--;
-
-                break;
-            }
-        }
+    public int cantidadMembresias() {
+        return (int) membresiaRepository.count();
     }
 
     // ENTRENADORES
 
     public void agregarEntrenador(Entrenador entrenador) {
-
-        if (cantidadEntrenadores < entrenadores.length) {
-            entrenadores[cantidadEntrenadores] = entrenador;
-            cantidadEntrenadores++;
-        }
+        entrenador.setId(0);
+        entrenadorRepository.save(entrenador);
     }
 
     public Entrenador[] listarEntrenadores() {
-    Entrenador[] resultado = new Entrenador[cantidadEntrenadores];
-
-    for (int i = 0; i < cantidadEntrenadores; i++) {
-        resultado[i] = entrenadores[i];
-    }
-
-    return resultado;
+        List<Entrenador> lista = entrenadorRepository.findAll();
+        return lista.toArray(new Entrenador[0]);
     }
 
     public Entrenador buscarEntrenador(int id) {
-
-        for (int i = 0; i < cantidadEntrenadores; i++) {
-
-            if (entrenadores[i].getId() == id) {
-                return entrenadores[i];
-            }
-        }
-
-        return null;
+        return entrenadorRepository.findById(id).orElse(null);
     }
 
     public void eliminarEntrenador(int id) {
+        entrenadorRepository.deleteById(id);
+    }
 
-        for (int i = 0; i < cantidadEntrenadores; i++) {
-
-            if (entrenadores[i].getId() == id) {
-
-                for (int j = i; j < cantidadEntrenadores - 1; j++) {
-                    entrenadores[j] = entrenadores[j + 1];
-                }
-
-                entrenadores[cantidadEntrenadores - 1] = null;
-                cantidadEntrenadores--;
-
-                break;
-            }
-        }
+    public int cantidadEntrenadores() {
+        return (int) entrenadorRepository.count();
     }
 
     // RESERVAS
 
     public void agregarReserva(Reserva reserva) {
-
-        if (cantidadReservas < reservas.length) {
-            reservas[cantidadReservas] = reserva;
-            cantidadReservas++;
-        }
+        reserva.setId(0);
+        reservaRepository.save(reserva);
     }
 
     public Reserva[] listarReservas() {
-    Reserva[] resultado = new Reserva[cantidadReservas];
-
-    for (int i = 0; i < cantidadReservas; i++) {
-        resultado[i] = reservas[i];
-    }
-
-    return resultado;
+        List<Reserva> lista = reservaRepository.findAll();
+        return lista.toArray(new Reserva[0]);
     }
 
     public Reserva buscarReserva(int id) {
-
-        for (int i = 0; i < cantidadReservas; i++) {
-
-            if (reservas[i].getId() == id) {
-                return reservas[i];
-            }
-        }
-
-        return null;
+        return reservaRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void eliminarReserva(int id) {
+        reservaRepository.deleteById(id);
 
-        for (int i = 0; i < cantidadReservas; i++) {
-
-            if (reservas[i].getId() == id) {
-
-                for (int j = i; j < cantidadReservas - 1; j++) {
-                    reservas[j] = reservas[j + 1];
-                }
-
-                reservas[cantidadReservas - 1] = null;
-                cantidadReservas--;
-
-                break;
-            }
+        if (reservaRepository.count() == 0) {
+            reservaRepository.reiniciarSecuenciaReservas();
         }
-    }
-
-    // CANTIDADES
-
-    public int cantidadClientes() {
-        return cantidadClientes;
-    }
-
-    public int cantidadMembresias() {
-        return cantidadMembresias;
-    }
-
-    public int cantidadEntrenadores() {
-        return cantidadEntrenadores;
     }
 
     public int cantidadReservas() {
-        return cantidadReservas;
+        return (int) reservaRepository.count();
+    }
+
+    // CONSULTA DTO DE RESERVAS
+
+    public ReservaDTO[] listarReservasDetalle() {
+        List<Object[]> resultados = reservaRepository.obtenerReservasDetalle();
+
+        ReservaDTO[] detalles = new ReservaDTO[resultados.size()];
+
+        for (int i = 0; i < resultados.size(); i++) {
+            Object[] fila = resultados.get(i);
+
+            detalles[i] = new ReservaDTO(
+                ((Number) fila[0]).intValue(),
+                (String) fila[1],
+                (String) fila[2],
+                (String) fila[3],
+                (String) fila[4],
+                String.valueOf(fila[5]),
+                String.valueOf(fila[6]),
+                (String) fila[7]
+            );
+        }
+
+        return detalles;
     }
 }
